@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Which FRIENDS Character Are You?</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f3f3f3;
+    }
+    .quiz-container {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    .question-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    #result {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #e3ffe3;
+      border: 1px solid #b2ffb2;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>Which FRIENDS Character Are You?</h1>
+    <form id="quizForm"></form>
+    <button type="button" onclick="submitQuiz()">Submit</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const characters = ["ross", "rachel", "chandler", "monica", "phoebe", "joey"];
+
+    const characterNames = {
+      ross: "Ross Geller",
+      rachel: "Rachel Green",
+      chandler: "Chandler Bing",
+      monica: "Monica Geller",
+      phoebe: "Phoebe Buffay",
+      joey: "Joey Tribbiani"
+    };
+
+    const imageSources = {
+      ross: "https://staticg.sportskeeda.com/editor/2022/11/a8fba-16698248111972-1920.jpg",
+      rachel: "https://imgix.bustle.com/lovelace/uploads/914/036103a0-e888-0132-cf2b-0e01949ad350.jpg?w=760&h=533&fit=crop&crop=faces&auto=format%2Ccompress&q=50&dpr=2",
+      chandler: "https://static.tnn.in/thumb/msid-104794822,thumbsize-477075,width-1280,height-720,resizemode-75/104794822.jpg",
+      monica: "https://static1.srcdn.com/wordpress/wp-content/uploads/2019/04/Monica-Geller.jpg",
+      phoebe: "https://www.tvguide.com/a/img/resize/fee9ae77e66d5202042d7ef46e45ddd78b3e4eef/hub/2019/03/20/e73cf358-cf75-4e73-bb19-cf873af13c37/phoebe-3.jpg?fit=crop&height=1080&width=1920",
+      joey: "https://static1.srcdn.com/wordpress/wp-content/uploads/2023/09/joey-in-friends.jpg"
+    };
+
+
+    const descriptions = {
+      ross: "You're Ross Geller! Intelligent, curious, and passionate, you’re someone who thrives on knowledge and deep conversations. While you may sometimes get caught up in your own head, your loyalty and care for your loved ones shine through. Whether it's dinosaurs or relationships, you dive in with full heart and intellect. You’re also that friend who always has a random fact or theory — and you're probably right!",
+      rachel: "You’re Rachel Green! Stylish, ambitious, and constantly evolving, you've grown from a dreamer into someone who knows exactly what they want. You bring sparkle and excitement to any room you walk into. Though you value independence, you also cherish deep emotional connections. Beneath the fashion-forward exterior lies someone who’s surprisingly wise and emotionally intelligent.",      
+      chandler: "You’re Chandler Bing! Sarcastic, witty, and endlessly lovable, you often use humor as your shield — but behind that snarky grin is a loyal and deeply caring person. You may be uncomfortable with serious feelings, but you’re the rock others rely on in tough times. Your friendships are full of inside jokes and belly laughs, and people appreciate your honesty, even when it’s awkward.",     
+      monica: "You’re Monica Geller! Driven, nurturing, and the ultimate host, you have a heart of gold wrapped in competitive spirit. You keep your world organized — not because you're rigid, but because you care. You make others feel safe and seen, and your fierce loyalty makes you the glue that holds people together. Under pressure? You shine.",      
+      phoebe: "You’re Phoebe Buffay! Eccentric, artistic, and unapologetically yourself, you march to your own beat and encourage others to do the same. People admire your honesty, kindness, and ability to see beauty in chaos. You're wildly creative, full of surprises, and a little mysterious in the best way. Whether it's your music or your energy — you’re unforgettable.",      
+      joey: "You’re Joey Tribbiani! Fun-loving, loyal, and full of heart, you live life with passion and simplicity. You value good food, good friends, and good vibes — and you’re always ready to stand up for the people you love. You may not always have the answers, but your warmth and sincerity win everyone over. Oh, and yes — you're definitely the life of the party."
+    };
+
+    const questions = [
+      // Q1 - Q25 (I'll insert scores inline below as simple equal distribution)
+      { text: "What’s your ideal way to spend a Sunday?", options: [
+        { text: "Exploring something new", scores: { ross: 1, phoebe: 1 } },
+        { text: "Shopping or chilling with friends", scores: { rachel: 1, joey: 1 } },
+        { text: "Staying home and relaxing", scores: { chandler: 1, joey: 1 } },
+        { text: "Cleaning, cooking, organizing", scores: { monica: 2 } }
+      ]},
+      { text: "How do you usually solve problems?", options: [
+        { text: "Reason it out", scores: { ross: 2 } },
+        { text: "Feel it out", scores: { rachel: 1, phoebe: 1 } },
+        { text: "Laugh it off", scores: { chandler: 2 } },
+        { text: "Take control and fix it", scores: { monica: 2 } }
+      ]},
+      { text: "What kind of job appeals to you most?", options: [
+        { text: "Educational or scientific", scores: { ross: 2 } },
+        { text: "Trendy and fast-paced", scores: { rachel: 2 } },
+        { text: "Creative and unpredictable", scores: { phoebe: 2 } },
+        { text: "Skilled and hands-on", scores: { monica: 1, joey: 1 } }
+      ]},
+      { text: "What’s your communication style?", options: [
+        { text: "Thoughtful and detailed", scores: { ross: 1, monica: 1 } },
+        { text: "Honest, sometimes dramatic", scores: { rachel: 2 } },
+        { text: "Witty with a hint of sarcasm", scores: { chandler: 2 } },
+        { text: "Direct and confident", scores: { monica: 2 } }
+      ]},
+      { text: "Pick a vacation type:", options: [
+        { text: "Historical city tour", scores: { ross: 2 } },
+        { text: "Fashion capital shopping trip", scores: { rachel: 2 } },
+        { text: "Road trip with no plan", scores: { phoebe: 2 } },
+        { text: "Lux hotel with spa + itinerary", scores: { monica: 2 } }
+      ]},
+      { text: "What’s your take on love?", options: [
+        { text: "It’s serious and complicated", scores: { ross: 2 } },
+        { text: "It’s magical — but messy", scores: { rachel: 2 } },
+        { text: "I’m scared, but curious", scores: { chandler: 2 } },
+        { text: "I want it all — now", scores: { joey: 2 } }
+      ]},
+      { text: "What’s your party vibe?", options: [
+        { text: "Low-key and meaningful", scores: { ross: 1, phoebe: 1 } },
+        { text: "Stylish and social", scores: { rachel: 2 } },
+        { text: "Chill and snack-focused", scores: { joey: 2 } },
+        { text: "Well-planned with themes", scores: { monica: 2 } }
+      ]},
+      { text: "What’s a big strength of yours?", options: [
+        { text: "Intelligence", scores: { ross: 2 } },
+        { text: "Adaptability", scores: { rachel: 1, phoebe: 1 } },
+        { text: "Humor", scores: { chandler: 2 } },
+        { text: "Responsibility", scores: { monica: 2 } }
+      ]},
+      { text: "What stresses you out?", options: [
+        { text: "Making the wrong choice", scores: { ross: 2 } },
+        { text: "Losing independence", scores: { rachel: 1, phoebe: 1 } },
+        { text: "Feeling misunderstood", scores: { phoebe: 2 } },
+        { text: "Chaos or lack of control", scores: { monica: 2 } }
+      ]},
+      { text: "What makes you feel proud?", options: [
+        { text: "Accomplishing goals", scores: { ross: 1, monica: 1 } },
+        { text: "Growing as a person", scores: { rachel: 2 } },
+        { text: "Making people laugh", scores: { chandler: 2 } },
+        { text: "Taking care of others", scores: { monica: 1, joey: 1 } }
+      ]},
+      { text: "Pick a comfort food:", options: [
+        { text: "Sandwich", scores: { joey: 2 } },
+        { text: "Salad or smoothie", scores: { rachel: 2 } },
+        { text: "Grilled cheese", scores: { chandler: 2 } },
+        { text: "Homemade pasta", scores: { monica: 2 } }
+      ]},
+      { text: "Your room is usually:", options: [
+        { text: "A little messy but functional", scores: { ross: 1, phoebe: 1 } },
+        { text: "Stylish but cluttered", scores: { rachel: 2 } },
+        { text: "‘Creative’ chaos", scores: { phoebe: 2 } },
+        { text: "Tidy and labeled", scores: { monica: 2 } }
+      ]},
+      { text: "You get invited to karaoke. You sing:", options: [
+        { text: "A classic rock ballad", scores: { ross: 1, joey: 1 } },
+        { text: "A pop diva anthem", scores: { rachel: 2 } },
+        { text: "Something weird and funny", scores: { phoebe: 1, chandler: 1 } },
+        { text: "You prepare in advance", scores: { monica: 2 } }
+      ]},
+      { text: "Which gift would you love most?", options: [
+        { text: "A rare book or fossil", scores: { ross: 2 } },
+        { text: "Designer shoes", scores: { rachel: 2 } },
+        { text: "A joke mug", scores: { chandler: 2 } },
+        { text: "A high-end kitchen gadget", scores: { monica: 2 } }
+      ]},
+      { text: "Which friend do you relate to most?", options: [
+        { text: "The smart one", scores: { ross: 2 } },
+        { text: "The stylish one", scores: { rachel: 2 } },
+        { text: "The funny one", scores: { chandler: 2 } },
+        { text: "The dependable one", scores: { monica: 2 } }
+      ]},
+      { text: "Your dream home would be:", options: [
+        { text: "Cozy with a bookshelf wall", scores: { ross: 1, phoebe: 1 } },
+        { text: "Bright and modern", scores: { rachel: 2 } },
+        { text: "Eclectic and artsy", scores: { phoebe: 2 } },
+        { text: "Spotless with perfect lighting", scores: { monica: 2 } }
+      ]},
+      { text: "Pick a pet (just based on vibe):", options: [
+        { text: "Curious and calm", scores: { ross: 1, phoebe: 1 } },
+        { text: "High-maintenance but cute", scores: { rachel: 2 } },
+        { text: "Weird but lovable", scores: { phoebe: 2 } },
+        { text: "Obedient and neat", scores: { monica: 2 } }
+      ]},
+      { text: "What’s your friendship role?", options: [
+        { text: "The thoughtful listener", scores: { ross: 1, phoebe: 1 } },
+        { text: "The drama fixer", scores: { rachel: 1, monica: 1 } },
+        { text: "The mood lightener", scores: { chandler: 1, joey: 1 } },
+        { text: "The planner and host", scores: { monica: 2 } }
+      ]},
+      { text: "Choose a coffee order:", options: [
+        { text: "Black, no sugar", scores: { ross: 2 } },
+        { text: "Iced caramel latte", scores: { rachel: 2 } },
+        { text: "Something seasonal and weird", scores: { phoebe: 2 } },
+        { text: "Cappuccino with extra foam", scores: { monica: 2 } }
+      ]},
+      { text: "What's your biggest flaw?", options: [
+        { text: "Overthinking", scores: { ross: 2 } },
+        { text: "Jealousy or pride", scores: { rachel: 2 } },
+        { text: "Avoiding feelings", scores: { chandler: 2 } },
+        { text: "Being a control freak", scores: { monica: 2 } }
+      ]},
+      { text: "What's your reaction to chaos?", options: [
+        { text: "Analyze and explain", scores: { ross: 2 } },
+        { text: "Panic, then adapt", scores: { rachel: 2 } },
+        { text: "Make a joke", scores: { chandler: 2 } },
+        { text: "Clean and organize", scores: { monica: 2 } }
+      ]},
+      { text: "What do you value most?", options: [
+        { text: "Knowledge", scores: { ross: 2 } },
+        { text: "Freedom", scores: { phoebe: 2 } },
+        { text: "Humor", scores: { chandler: 2 } },
+        { text: "Stability", scores: { monica: 2 } }
+      ]},
+      { text: "How do you deal with change?", options: [
+        { text: "With lots of research", scores: { ross: 2 } },
+        { text: "Slowly but surely", scores: { rachel: 2 } },
+        { text: "With random outbursts", scores: { phoebe: 2 } },
+        { text: "By scheduling everything", scores: { monica: 2 } }
+      ]},
+      { text: "You walk into a party and...", options: [
+        { text: "Look for someone to talk to", scores: { ross: 2 } },
+        { text: "Make an entrance", scores: { rachel: 2 } },
+        { text: "Head for the snacks", scores: { joey: 2 } },
+        { text: "Check if everything’s set up", scores: { monica: 2 } }
+      ]},
+      { text: "Last one — your catchphrase might be:", options: [
+        { text: "“Actually...”", scores: { ross: 2 } },
+        { text: "“Oh my God!”", scores: { rachel: 2 } },
+        { text: "“Could I be any more done?”", scores: { chandler: 2 } },
+        { text: "“I made a chart.”", scores: { monica: 2 } }
+      ]}
+    ];
+
+    function renderQuiz() {
+      const form = document.getElementById('quizForm');
+      questions.forEach((q, index) => {
+        const div = document.createElement('div');
+        div.classList.add('question');
+        div.innerHTML = `<div class="question-title">${index + 1}. ${q.text}</div>`;
+        q.options.forEach((opt, i) => {
+          const id = `q${index}_${i}`;
+          div.innerHTML += `
+            <label>
+              <input type="radio" name="q${index}" value='${JSON.stringify(opt.scores)}' required />
+              ${opt.text}
+            </label>`;
+        });
+        form.appendChild(div);
+      });
+    }
+
+    function submitQuiz() {
+      const form = document.forms["quizForm"];
+      const resultDiv = document.getElementById("result");
+      const totals = Object.fromEntries(characters.map(c => [c, 0]));
+
+      for (let i = 0; i < questions.length; i++) {
+        const answer = form[`q${i}`].value;
+        const scoreObj = JSON.parse(answer);
+        for (const char in scoreObj) {
+          totals[char] += scoreObj[char];
+        }
+      }
+
+      const topChar = Object.keys(totals).reduce((a, b) => totals[a] > totals[b] ? a : b);
+      resultDiv.innerHTML = `
+        <div class="result-container">
+          <h2>You are <span class="character-name">${characterNames[topChar]}</span>!</h2>
+          <img class="character-image" src="${imageSources[topChar]}" alt="${characterNames[topChar]}">
+          <p class="character-description">${descriptions[topChar]}</p>
+        </div>
+      `;
+    }
+
+    window.onload = renderQuiz;
+  </script>
+</body>
+</html>
